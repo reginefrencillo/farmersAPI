@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmers</title>
+    <style>
+        /* Container to center and style the page */
+        .container {
+          width: 60%;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #f9f9f9;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Page title styling */
+        .page-title {
+          text-align: center;
+          font-size: 2em;
+          margin-bottom: 20px;
+          color: #4CAF50;
+        }
+
+        /* Styling for the form */
+        .farmer-form {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        /* Style for each form field */
+        .farmer-form p {
+          margin: 10px 0;
+          font-size: 1.1em;
+        }
+
+        .farmer-form input, .farmer-form select, .farmer-form textarea {
+          padding: 10px;
+          font-size: 1em;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          width: 100%;
+        }
+
+        /* Button styling */
+        .submit-btn {
+          padding: 12px 20px;
+          background-color: #4CAF50;
+          color: white;
+          font-size: 1.1em;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+          background-color: #45a049;
+        }
+
+        /* Add responsive styling */
+        @media screen and (max-width: 768px) {
+          .container {
+            width: 90%;
+          }
+          .page-title {
+            font-size: 1.5em;
+          }
+          .farmer-form input, .farmer-form select, .farmer-form textarea {
+            font-size: 1em;
+          }
+        }
+
+        /* Success message popup styling */
+        .popup-message {
+          display: none;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: #4CAF50;
+          color: white;
+          padding: 20px;
+          text-align: center;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          z-index: 1000;
+        }
+
+        .popup-message button {
+          padding: 10px 20px;
+          background-color: white;
+          color: #4CAF50;
+          font-size: 1.1em;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        .popup-message button:hover {
+          background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="page-title">Add Farmer</h1>
+
+    <form method="POST" enctype="multipart/form-data" class="farmer-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="submit-btn">Save</button>
+    </form>
+  </div>
+
+  <!-- Success message popup -->
+  <div id="popupMessage" class="popup-message">
+    <p>Farmer added successfully!</p>
+    <button id="closePopupBtn">OK</button>
+  </div>
+
+  <script>
+    // Show the success message popup if a success message is available
+    {% if messages %}
+      window.onload = function() {
+        const popupMessage = document.getElementById("popupMessage");
+        {% for message in messages %}
+          {% if message.tags == "success" %}
+            if (popupMessage) {
+              popupMessage.style.display = "block";
+            }
+          {% endif %}
+        {% endfor %}
+      };
+    {% endif %}
+
+    // Handle the "OK" button click to hide the popup and redirect
+    document.getElementById("closePopupBtn")?.addEventListener("click", function() {
+      // Hide the popup
+      const popupMessage = document.getElementById("popupMessage");
+      if (popupMessage) {
+        popupMessage.style.display = "none";
+      }
+      // Redirect to the "Add Farmer" page (adjust URL name if needed)
+      window.location.href = '{% url "farmers:add_farmer" %}';
+    });
+  </script>
+
+</body>
+</html>
